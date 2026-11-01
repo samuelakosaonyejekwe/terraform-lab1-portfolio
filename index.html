@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Terraform Lab 1 by Samuel Akosa Onyejekwe: Apache web server on AWS EC2 provisioned with Terraform. Screenshots, recordings, code, logs and report.">
+<title>cba_terraform Lab 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column of seven numbered tasks (the lab's real sequence), each with its evidence strip; media library + code + logs follow. */
+:root{
+  --bg:#f6f5f9; --surface:#ffffff; --ink:#1b1a24; --muted:#5d5a6e; --line:#dfdce8;
+  --accent:#6a3fb0;          /* Terraform violet */
+  --accent-soft:#ece5f7;
+  --aws:#b85c00;             /* AWS orange, darkened for contrast */
+  --ok:#1b7f4b; --term:#16151c; --term-fg:#e6e3ef;
+  --display:"Archivo",system-ui,sans-serif; --body:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121118; --surface:#1b1a24; --ink:#ebe8f4; --muted:#a19db3; --line:#2f2c3c;
+  --accent:#b996f0; --accent-soft:#2a2240; --aws:#ffa94d; --ok:#5fd39a; --term:#0b0a10; --term-fg:#e6e3ef; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121118; --surface:#1b1a24; --ink:#ebe8f4; --muted:#a19db3; --line:#2f2c3c;
+  --accent:#b996f0; --accent-soft:#2a2240; --aws:#ffa94d; --ok:#5fd39a; --term:#0b0a10; --term-fg:#e6e3ef; color-scheme:dark}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px;display:grid;gap:56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.6rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+code,.mono{font-family:var(--mono);font-size:.9em}
+.eyebrow{font:500 .78rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header{display:grid;gap:18px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 22px;color:var(--muted);font-size:.95rem}
+.meta b{color:var(--ink);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:600 .92rem var(--body);border:1px solid var(--accent);background:var(--accent);color:var(--surface);padding:10px 16px;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible,button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--aws);outline-offset:2px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.status{font-size:.85rem;color:var(--muted);min-height:1.2em}
+/* resource summary */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));border:1px solid var(--line);background:var(--surface);border-radius:8px;overflow:hidden}
+.facts div{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.facts dt{font:500 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:4px 0 0;font-weight:600;overflow-wrap:anywhere}
+.facts dd.ok{color:var(--ok)}
+/* tasks */
+.tasks{display:grid;gap:44px}
+.task{display:grid;grid-template-columns:64px minmax(0,1fr);gap:20px}
+.num{font:800 2.4rem/1 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.task-body{display:grid;gap:12px;min-width:0}
+.cmds{display:flex;flex-wrap:wrap;gap:6px}
+.cmds code{background:var(--accent-soft);color:var(--ink);padding:3px 8px;border-radius:4px}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:6px}
+.thumb{all:unset;cursor:pointer;display:grid;gap:6px;min-width:0}
+.thumb img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;border:1px solid var(--line);border-radius:5px;background:var(--term);display:block}
+.thumb span{font-size:.8rem;color:var(--muted);line-height:1.35}
+.thumb:hover img{border-color:var(--accent)}
+.thumb .src{font:500 .66rem var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.src.aws{color:var(--aws)} .src.gh,.src.code{color:var(--accent)} .src.term{color:var(--ok)}
+.note{border-left:3px solid var(--aws);padding:10px 14px;background:var(--surface);border-radius:0 6px 6px 0;font-size:.95rem}
+/* videos */
+.videos{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.video{display:grid;gap:8px;min-width:0}
+.video video{width:100%;aspect-ratio:16/9;background:var(--term);border-radius:6px;border:1px solid var(--line)}
+.video-row{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.video-row span{font-size:.9rem}
+.linkbtn{all:unset;cursor:pointer;color:var(--accent);font:600 .82rem var(--body);white-space:nowrap}
+/* code + logs */
+.viewer{display:grid;gap:10px;min-width:0}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{font:500 .85rem var(--mono);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;border-radius:5px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+pre.out{margin:0;background:var(--term);color:var(--term-fg);font:13px/1.5 var(--mono);padding:16px;border-radius:6px;overflow:auto;max-height:520px;white-space:pre}
+select{font:500 .9rem var(--mono);padding:8px;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:100%}
+section{display:grid;gap:18px}
+.pdf{width:100%;height:80vh;min-height:480px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padding-top:18px}
+/* lightbox */
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);width:min(1200px,96vw);max-height:92vh;border-radius:8px;overflow:hidden}
+dialog::backdrop{background:rgba(10,8,20,.75)}
+.lb{display:grid;grid-template-rows:auto minmax(0,1fr);max-height:92vh}
+.lb-head{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.lb-head span{font-size:.9rem;min-width:0}
+.lb-body{overflow:auto;background:var(--term)}
+.lb-body img{display:block;width:100%;height:auto}
+@media (max-width:560px){.task{grid-template-columns:1fr;gap:6px}.num{font-size:1.8rem}}
+@media (prefers-reduced-motion:no-preference){.thumb img{transition:border-color .15s}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Platform Engineering · Terraform · Lab 1</span>
+    <h1>Spinning up an Apache web server on AWS with Terraform</h1>
+    <p>I wrote a Terraform module that provisions a security group and an EC2 instance in eu-west-2, bootstrapped Apache with user data, pushed the code to GitHub, and destroyed everything afterwards. Every screenshot, recording, code file and command log from the run is on this page.</p>
+    <div class="meta">
+      <span><b>Samuel Akosa Onyejekwe</b></span>
+      <span>Completed <b>1 Nov 2026</b></span>
+      <span>Terraform <b>v1.14.6</b> · AWS provider <b>v6.71.0</b></span>
+    </div>
+    <div class="actions">
+      <a class="btn" href="https://github.com/samuelakosaonyejekwe/cba_terraform" target="_blank" rel="noopener">GitHub repo: cba_terraform ↗</a>
+      <button class="btn ghost dl-pdf" type="button" id="dl-pdf" data-file="docs/Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf">Download Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf</button>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </header>
+
+  <dl class="facts">
+    <div><dt>Security group</dt><dd>cba_tf_sg · SSH 22 + HTTP 80</dd></div>
+    <div><dt>EC2 instance</dt><dd>CBATerraformInstance · t3.micro</dd></div>
+    <div><dt>AMI</dt><dd class="mono">ami-01dfd9fb3a7b119e0 (AL2)</dd></div>
+    <div><dt>Region</dt><dd>eu-west-2 · London</dd></div>
+    <div><dt>Web check</dt><dd class="ok">HTTP 200 · Hello World</dd></div>
+    <div><dt>Teardown</dt><dd class="ok">2 destroyed · 0 running</dd></div>
+  </dl>
+
+  <section aria-labelledby="h-report">
+    <h2 id="h-report">Lab report (PDF)</h2>
+    <p>Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf: my full write-up of the lab, with all 49 figures.</p>
+    <div class="actions">
+      <a class="btn" href="docs/Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf" target="_blank" rel="noopener">Open the PDF ↗</a>
+      <button class="btn ghost dl-pdf" type="button" data-file="docs/Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf">Download the PDF</button>
+    </div>
+    <iframe class="pdf" src="docs/Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf#view=FitH" title="Lab1_Terraform_Report_Samuel_Akosa_Onyejekwe.pdf"></iframe>
+  </section>
+
+  <section aria-labelledby="h-tasks">
+    <h2 id="h-tasks">The seven tasks</h2>
+    <div class="tasks" id="tasks"></div>
+  </section>
+
+  <section aria-labelledby="h-videos">
+    <h2 id="h-videos">Recordings</h2>
+    <p>Ten recordings, in the order the lab was done. Terminal recordings replay the real recorded command output; console, browser and GitHub recordings are captures of the live pages.</p>
+    <div class="videos" id="videos"></div>
+  </section>
+
+  <section aria-labelledby="h-code">
+    <h2 id="h-code">Terraform code</h2>
+    <div class="viewer">
+      <div class="tabs" id="code-tabs"></div>
+      <pre class="out" id="code-out">Loading…</pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-logs">
+    <h2 id="h-logs">Command logs</h2>
+    <p>The exact output of every command I ran, with the AWS account ID masked.</p>
+    <div class="viewer">
+      <label for="log-select" class="eyebrow">Choose a command</label>
+      <select id="log-select"></select>
+      <pre class="out" id="log-out">Loading…</pre>
+    </div>
+  </section>
+
+  <footer>AWS account ID is masked (XXXX-XXXX-0027) in every screenshot, recording and log. All AWS resources from this lab were destroyed on 1 Nov 2026.</footer>
+</div>
+
+<dialog id="lb" aria-label="Screenshot">
+  <div class="lb">
+    <div class="lb-head">
+      <span id="lb-cap"></span>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="lb-dl">Download</button>
+        <button class="btn" type="button" id="lb-close">Close</button>
+      </div>
+    </div>
+    <div class="lb-body"><img id="lb-img" alt=""></div>
+  </div>
+</dialog>
+
+<script>
+const T = (f,c)=>({f:"shots/terminal/"+f+".png",c,k:"term"});
+const A = (f,c)=>({f:"shots/aws_console/"+f+".png",c,k:"aws"});
+const G = (f,c)=>({f:"shots/github/"+f+".png",c,k:"gh"});
+const C = (f,c)=>({f:"shots/code/"+f+".png",c,k:"code"});
+const LABEL={term:"Terminal",aws:"AWS console",gh:"GitHub",code:"Code"};
+const TASKS=[
+ {t:"Create a GitHub repository",d:"Created the public repo cba_terraform under my account with a README and GitHub's Terraform .gitignore, which keeps state files and .tfvars out of version control.",cmd:["gh repo create cba_terraform --public --add-readme --gitignore Terraform"],
+  s:[T("t1_01_gh_auth_status","GitHub CLI signed in as samuelakosaonyejekwe"),T("t1_02_create_repo_cba_terraform","Repo created"),G("t1_03_github_profile_repositories","cba_terraform on my profile"),C("t2_10_gitignore","Terraform .gitignore")]},
+ {t:"Open VS Code (WSL) and clone the repository",d:"Worked in VS Code connected to WSL Ubuntu, where Terraform is installed, and cloned the repo.",cmd:["git clone https://github.com/samuelakosaonyejekwe/cba_terraform.git"],
+  s:[T("t2_01_git_clone","git clone"),T("t2_02_repo_contents_gitignore","Cloned repo contents")]},
+ {t:"Create the Terraform module",d:"Wrote variables.tf (region, instance type, AMI, VPC, key pair) and main.tf (AWS provider, security group cba_tf_sg, EC2 instance cba_tf_instance), then initialised and validated.",cmd:["terraform init","terraform fmt","terraform validate"],
+  s:[C("t3_10_variables_tf","variables.tf"),C("t3_11_main_tf_initial","main.tf: provider, SG, instance"),T("t3_01_files_created","Files created"),T("t3_02_terraform_init","terraform init"),T("t3_03_terraform_fmt_validate","terraform validate")],
+  note:"t2.micro is no longer Free Tier eligible on my account, so I used t3.micro, which is."},
+ {t:"Deploy the module to AWS",d:"terraform plan showed 2 to add. terraform apply created the security group and the instance, which I then checked in the console, the CLI and the Terraform state.",cmd:["terraform plan","terraform apply","terraform state list"],
+  s:[T("t4_01_terraform_plan","terraform plan: 2 to add"),T("t4_02_terraform_apply","terraform apply: 2 added"),A("t4_10_ec2_dashboard","EC2 dashboard: 1 running"),A("t4_11_instances_list_running","CBATerraformInstance running"),A("t4_12_instance_details","Instance summary"),A("t4_13_instance_details_ami_keypair","AMI and key pair"),A("t4_14_security_groups_list","cba_tf_sg"),A("t4_15_security_group_inbound_rules","Inbound rules 22 and 80"),T("t4_03_terraform_state_list","terraform state list"),T("t4_04_terraform_state_show_instance","terraform state show"),T("t4_05_aws_cli_verify_instance","AWS CLI check")]},
+ {t:"Deploy the Apache web server",d:"Added install_apache.sh as user data. The instance was replaced, booted with Apache, and served Hello World on its public IP.",cmd:["terraform plan","terraform apply","curl -si http://52.56.89.180"],
+  s:[C("t5_10_install_apache_sh","install_apache.sh"),C("t5_11_main_tf_with_user_data","main.tf with user_data"),T("t5_01_install_apache_sh","Script created"),T("t5_02_terraform_plan_user_data","Plan: instance replaced"),T("t5_03_terraform_apply_user_data","Apply: new instance"),T("t5_04_new_public_ip","New public IP"),A("t5_21_instances_list_apache_instance","Old terminated, new running"),A("t5_22_new_instance_details_public_ip","New instance summary"),A("t5_20_apache_hello_world_browser","Hello World in the browser"),T("t5_05_curl_apache_200_ok","curl: 200 OK")],
+  note:"On AWS provider v5 and later, changing user_data updates the instance in place, and cloud-init only runs user data on first boot. I added user_data_replace_on_change = true so the new script runs on a fresh instance."},
+ {t:"Push the Terraform files to GitHub",d:"Checked what Git would track (state files are ignored), committed, pushed, and confirmed the files on GitHub.",cmd:["git status","git add .","git commit -m \"…\"","git push"],
+  s:[T("t6_01_git_status","git status"),T("t6_02_git_add_and_status","git add + status"),T("t6_03_git_commit","git commit"),T("t6_04_git_push_and_log","git push + log"),G("t1_01_github_repo_home","Repo home"),G("t1_02_github_repo_readme","README"),G("t6_10_github_main_tf","main.tf"),G("t6_11_github_variables_tf","variables.tf"),G("t6_12_github_install_apache_sh","install_apache.sh"),G("t6_13_github_gitignore_terraform",".gitignore"),G("t6_14_github_commit_history","Commit history"),G("t6_15_github_commit_diff","Commit diff"),C("t6_20_readme_md","README.md")]},
+ {t:"Destroy the resources",d:"terraform destroy removed both resources. The state, the AWS CLI and the console all confirm nothing is left running, so there is no ongoing cost.",cmd:["terraform destroy"],
+  s:[T("t7_01_terraform_destroy","terraform destroy: 2 destroyed"),T("t7_02_state_empty","State empty"),T("t7_03_aws_cli_verify_cleanup","AWS CLI: nothing left"),A("t7_10_instances_terminated","Instances terminated"),A("t7_11_security_group_deleted","Security group gone"),A("t7_12_ec2_dashboard_after_destroy","Dashboard: 0 running")]}
+];
+const VIDEOS=[
+ ["01_terminal_task1-2_create_repo_and_clone","Tasks 1–2 · Create repo and clone"],
+ ["02_terminal_task3-4_init_plan_apply","Tasks 3–4 · init, validate, plan, apply"],
+ ["03_aws_console_resources_created","Task 4 · Console: resources created"],
+ ["04_terminal_task5_apache_user_data","Task 5 · Apache via user data"],
+ ["05_aws_console_apache_instance","Task 5 · Console: Apache instance"],
+ ["06_apache_web_server_in_browser","Task 5 · Hello World in the browser"],
+ ["07_terminal_task6_git_push","Task 6 · Push to GitHub"],
+ ["08_github_repository_walkthrough","Task 6 · GitHub walkthrough"],
+ ["09_terminal_task7_destroy","Task 7 · terraform destroy"],
+ ["10_aws_console_resources_destroyed","Task 7 · Console: resources destroyed"]
+];
+const CODE=[["main.tf","main.tf"],["variables.tf","variables.tf"],["install_apache.sh","install_apache.sh"],["main_stage1.tf","main.tf (before user_data)"],["README.md","README.md"],[".terraform.lock.hcl",".terraform.lock.hcl"]];
+const LOGS=["t1_01_gh_auth","t1_02_create_repo","t2_01_clone","t2_02_ls","t3_01_ls","t3_02_init","t3_03_fmt_validate","t4_01_plan","t4_02_apply","t4_03_state_list","t4_04_state_show","t4_05_aws_verify","t5_01_create_script","t5_02_plan","t5_03_apply","t5_04_state_ip","t5_05_curl","t6_01_git_status","t6_02_git_add","t6_03_git_status_after_add","t6_04_git_commit","t6_05_git_push","t6_06_git_log","t7_01_destroy","t7_02_state_empty","t7_03_aws_verify_cleanup"];
+
+const $=s=>document.querySelector(s);
+const el=(tag,props={},kids=[])=>{const e=Object.assign(document.createElement(tag),props);kids.forEach(k=>e.append(k));return e;};
+
+// tasks
+const tasksEl=$("#tasks");
+TASKS.forEach((t,i)=>{
+  const strip=el("div",{className:"strip"});
+  t.s.forEach(s=>{
+    const b=el("button",{className:"thumb",type:"button"},[
+      el("img",{src:s.f,alt:s.c,loading:"lazy"}),
+      el("span",{},[el("div",{className:"src "+s.k,textContent:LABEL[s.k]}),document.createTextNode(s.c)])]);
+    b.addEventListener("click",()=>openLb(s, i+1));
+    strip.append(b);
+  });
+  const body=el("div",{className:"task-body"},[
+    el("h3",{textContent:t.t}), el("p",{textContent:t.d}),
+    el("div",{className:"cmds"},t.cmd.map(c=>el("code",{textContent:c})))]);
+  if(t.note) body.append(el("p",{className:"note",textContent:t.note}));
+  body.append(strip);
+  tasksEl.append(el("article",{className:"task"},[el("div",{className:"num",textContent:String(i+1).padStart(2,"0")}),body]));
+});
+
+// lightbox
+const lb=$("#lb"); let current=null;
+function openLb(s,n){current=s;$("#lb-img").src=s.f;$("#lb-img").alt=s.c;$("#lb-cap").textContent="Task "+n+" · "+LABEL[s.k]+" · "+s.c;lb.showModal();$(".lb-body").scrollTop=0;}
+$("#lb-close").addEventListener("click",()=>lb.close());
+lb.addEventListener("click",e=>{if(e.target===lb)lb.close();});
+$("#lb-dl").addEventListener("click",()=>current&&save(current.f));
+
+// videos
+const vEl=$("#videos");
+VIDEOS.forEach(([f,c])=>{
+  const src="videos/"+f+".webm";
+  const dl=el("button",{className:"linkbtn dl",type:"button",textContent:"Download"});
+  dl.addEventListener("click",()=>save(src));
+  vEl.append(el("div",{className:"video"},[
+    el("video",{src,controls:true,preload:"metadata",muted:true,playsInline:true}),
+    el("div",{className:"video-row"},[el("span",{textContent:c}),dl])]));
+});
+
+// code viewer
+const codeOut=$("#code-out"), codeTabs=$("#code-tabs");
+async function showCode(f,btn){
+  codeTabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));
+  codeOut.textContent="Loading…";
+  try{const r=await fetch("code/"+f);if(!r.ok)throw new Error(r.status);codeOut.textContent=await r.text();}
+  catch(e){codeOut.textContent="Could not load "+f+". Reload the page to try again.";}
+}
+CODE.forEach(([f,label],i)=>{const b=el("button",{type:"button",textContent:label});b.setAttribute("aria-pressed","false");b.addEventListener("click",()=>showCode(f,b));codeTabs.append(b);if(i===0)showCode(f,b);});
+
+// logs viewer
+const sel=$("#log-select"), logOut=$("#log-out");
+LOGS.forEach(l=>sel.append(el("option",{value:l,textContent:"Task "+l[1]+" · "+l.slice(6).replace(/_/g," ")})));
+async function showLog(){logOut.textContent="Loading…";try{const r=await fetch("logs/"+sel.value+".txt");if(!r.ok)throw new Error(r.status);logOut.textContent=await r.text();}catch(e){logOut.textContent="Could not load this log. Reload the page to try again.";}}
+sel.addEventListener("change",showLog); showLog();
+
+// downloads: plain links on GitHub Pages
+function save(path){const a=document.createElement("a");a.href=path;a.download=path.split("/").pop();document.body.append(a);a.click();a.remove();}
+document.querySelectorAll(".dl-pdf").forEach(b=>b.addEventListener("click",()=>save(b.dataset.file)));
+</script>
+
+</body>
+</html>

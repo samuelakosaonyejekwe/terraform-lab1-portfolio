@@ -1,0 +1,2 @@
+$ gh repo create cba_terraform --public --add-readme --gitignore Terraform --description "Lab 1 - Spinning up an Apache web server on AWS EC2 with Terraform (Platform Engineering)"
+https://github.com/samuelakosaonyejekwe/cba_terraform

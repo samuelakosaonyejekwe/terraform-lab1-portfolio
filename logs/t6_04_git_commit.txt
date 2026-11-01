@@ -1,0 +1,7 @@
+$ git commit -m "Lab 1: Terraform module to provision EC2 + security group and deploy Apache web server"
+[main 3a98d6f] Lab 1: Terraform module to provision EC2 + security group and deploy Apache web server
+ 5 files changed, 134 insertions(+), 1 deletion(-)
+ create mode 100644 .terraform.lock.hcl
+ create mode 100644 install_apache.sh
+ create mode 100644 main.tf
+ create mode 100644 variables.tf

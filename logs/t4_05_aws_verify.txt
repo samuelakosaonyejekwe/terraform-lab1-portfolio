@@ -1,0 +1,13 @@
+$ aws ec2 describe-instances --instance-ids i-0aacb5d3808029ccf --query 'Reservations[].Instances[].{ID:InstanceId,Type:InstanceType,State:State.Name,AMI:ImageId,Key:KeyName,PublicIP:PublicIpAddress,SG:SecurityGroups[0].GroupName,Name:Tags[?Key==`Name`]|[0].Value}' --output table
+---------------------------------------
+|          DescribeInstances          |
++-----------+-------------------------+
+|  AMI      |  ami-01dfd9fb3a7b119e0  |
+|  ID       |  i-0aacb5d3808029ccf    |
+|  Key      |  cba-akosa-keypair      |
+|  Name     |  CBATerraformInstance   |
+|  PublicIP |  18.171.209.197         |
+|  SG       |  cba_tf_sg              |
+|  State    |  running                |
+|  Type     |  t3.micro               |
++-----------+-------------------------+

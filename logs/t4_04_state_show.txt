@@ -1,0 +1,112 @@
+$ terraform state show aws_instance.cba_tf_instance
+# aws_instance.cba_tf_instance:
+resource "aws_instance" "cba_tf_instance" {
+    ami                                  = "ami-01dfd9fb3a7b119e0"
+    arn                                  = "arn:aws:ec2:eu-west-2:XXXXXXXX0027:instance/i-0aacb5d3808029ccf"
+    associate_public_ip_address          = true
+    availability_zone                    = "eu-west-2a"
+    disable_api_stop                     = false
+    disable_api_termination              = false
+    ebs_optimized                        = false
+    force_destroy                        = false
+    get_password_data                    = false
+    hibernation                          = false
+    host_id                              = null
+    iam_instance_profile                 = null
+    id                                   = "i-0aacb5d3808029ccf"
+    instance_initiated_shutdown_behavior = "stop"
+    instance_lifecycle                   = null
+    instance_state                       = "running"
+    instance_type                        = "t3.micro"
+    ipv6_address_count                   = 0
+    ipv6_addresses                       = []
+    key_name                             = "cba-akosa-keypair"
+    monitoring                           = false
+    outpost_arn                          = null
+    password_data                        = null
+    placement_group                      = null
+    placement_group_id                   = null
+    placement_partition_number           = 0
+    primary_network_interface_id         = "eni-0d2e8d3d21da2c7aa"
+    private_dns                          = "ip-172-31-0-45.eu-west-2.compute.internal"
+    private_ip                           = "172.31.0.45"
+    public_dns                           = "ec2-18-171-209-197.eu-west-2.compute.amazonaws.com"
+    public_ip                            = "18.171.209.197"
+    region                               = "eu-west-2"
+    secondary_private_ips                = []
+    security_groups                      = [
+        "cba_tf_sg",
+    ]
+    source_dest_check                    = true
+    spot_instance_request_id             = null
+    subnet_id                            = "subnet-04b06037ec9380c78"
+    tags                                 = {
+        "Name"  = "CBATerraformInstance"
+        "Owner" = "samuelakosaonyejekwe"
+    }
+    tags_all                             = {
+        "Name"  = "CBATerraformInstance"
+        "Owner" = "samuelakosaonyejekwe"
+    }
+    tenancy                              = "default"
+    user_data_replace_on_change          = false
+    vpc_security_group_ids               = [
+        "sg-0a95f125f4f961ac6",
+    ]
+
+    capacity_reservation_specification {
+        capacity_reservation_preference = "open"
+    }
+
+    cpu_options {
+        amd_sev_snp           = null
+        core_count            = 1
+        nested_virtualization = null
+        threads_per_core      = 2
+    }
+
+    credit_specification {
+        cpu_credits = "unlimited"
+    }
+
+    enclave_options {
+        enabled = false
+    }
+
+    maintenance_options {
+        auto_recovery = "default"
+    }
+
+    metadata_options {
+        http_endpoint               = "enabled"
+        http_protocol_ipv6          = "disabled"
+        http_put_response_hop_limit = 1
+        http_tokens                 = "optional"
+        instance_metadata_tags      = "disabled"
+    }
+
+    primary_network_interface {
+        delete_on_termination = true
+        network_interface_id  = "eni-0d2e8d3d21da2c7aa"
+    }
+
+    private_dns_name_options {
+        enable_resource_name_dns_a_record    = false
+        enable_resource_name_dns_aaaa_record = false
+        hostname_type                        = "ip-name"
+    }
+
+    root_block_device {
+        delete_on_termination = true
+        device_name           = "/dev/xvda"
+        encrypted             = false
+        iops                  = 100
+        kms_key_id            = null
+        tags                  = {}
+        tags_all              = {}
+        throughput            = 0
+        volume_id             = "vol-03d61fdcc9105e476"
+        volume_size           = 8
+        volume_type           = "gp2"
+    }
+}

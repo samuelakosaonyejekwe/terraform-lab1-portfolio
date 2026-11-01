@@ -1,0 +1,2 @@
+$ terraform state list; echo "resources in state: $(terraform state list | wc -l)"
+resources in state: 0

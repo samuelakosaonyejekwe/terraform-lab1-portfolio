@@ -1,0 +1,3 @@
+$ git push
+To https://github.com/samuelakosaonyejekwe/cba_terraform.git
+   1db1c18..3a98d6f  main -> main

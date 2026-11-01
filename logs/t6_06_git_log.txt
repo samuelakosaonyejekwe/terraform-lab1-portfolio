@@ -1,0 +1,3 @@
+$ git -c color.ui=always log --oneline --graph -n 5
+* 3a98d6f Lab 1: Terraform module to provision EC2 + security group and deploy Apache web server
+* 1db1c18 Initial commit

@@ -1,0 +1,19 @@
+$ ls -la && cat install_apache.sh
+total 52
+drwxr-xr-x 4 akosa akosa 4096 Nov  1 12:52 .
+drwxr-xr-x 3 akosa akosa 4096 Nov  1 12:40 ..
+drwxr-xr-x 8 akosa akosa 4096 Nov  1 12:40 .git
+-rw-r--r-- 1 akosa akosa 1200 Nov  1 12:40 .gitignore
+-rw-r--r-- 1 akosa akosa  188 Nov  1 12:52 install_apache.sh
+-rw-r--r-- 1 akosa akosa 1117 Nov  1 12:52 main.tf
+-rw-r--r-- 1 akosa akosa  106 Nov  1 12:40 README.md
+drwxr-xr-x 3 akosa akosa 4096 Nov  1 12:41 .terraform
+-rw-r--r-- 1 akosa akosa 1452 Nov  1 12:41 .terraform.lock.hcl
+-rw-r--r-- 1 akosa akosa 8296 Nov  1 12:42 terraform.tfstate
+-rw-r--r-- 1 akosa akosa  467 Nov  1 12:40 variables.tf
+#!/bin/bash
+sudo yum update -y
+sudo yum install httpd -y
+sudo service httpd start
+sudo service httpd status
+sudo echo "Hello World from $(hostname -f)" | sudo tee /var/www/html/index.html

@@ -1,0 +1,9 @@
+$ ls -la
+total 28
+drwxr-xr-x 3 akosa akosa 4096 Nov  1 12:40 .
+drwxr-xr-x 3 akosa akosa 4096 Nov  1 12:40 ..
+drwxr-xr-x 8 akosa akosa 4096 Nov  1 12:40 .git
+-rw-r--r-- 1 akosa akosa 1200 Nov  1 12:40 .gitignore
+-rw-r--r-- 1 akosa akosa  866 Nov  1 12:40 main.tf
+-rw-r--r-- 1 akosa akosa  106 Nov  1 12:40 README.md
+-rw-r--r-- 1 akosa akosa  467 Nov  1 12:40 variables.tf

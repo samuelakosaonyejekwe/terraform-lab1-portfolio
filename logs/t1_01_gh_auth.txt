@@ -1,0 +1,7 @@
+$ gh auth status
+github.com
+  ✓ Logged in to github.com account samuelakosaonyejekwe (/home/akosa/.config/gh/hosts.yml)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'delete_repo', 'gist', 'read:org', 'repo', 'workflow'

@@ -1,0 +1,13 @@
+$ curl -si http://52.56.89.180
+HTTP/1.1 200 OK
+Date: Sun, 01 Nov 2026 10:54:30 GMT
+Server: Apache/2.4.69 ()
+Upgrade: h2,h2c
+Connection: Upgrade
+Last-Modified: Sun, 01 Nov 2026 10:53:43 GMT
+ETag: "3c-65f34d7ce1759"
+Accept-Ranges: bytes
+Content-Length: 60
+Content-Type: text/html; charset=UTF-8
+
+Hello World from ip-172-31-15-40.eu-west-2.compute.internal

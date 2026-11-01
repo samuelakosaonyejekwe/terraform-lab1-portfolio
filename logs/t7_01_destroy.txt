@@ -1,0 +1,201 @@
+$ terraform destroy
+aws_security_group.cba_tf_sg: Refreshing state... [id=sg-0a95f125f4f961ac6]
+aws_instance.cba_tf_instance: Refreshing state... [id=i-0142a8e6e9acf02bd]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_instance.cba_tf_instance will be destroyed
+  - resource "aws_instance" "cba_tf_instance" {
+      - ami                                  = "ami-01dfd9fb3a7b119e0" -> null
+      - arn                                  = "arn:aws:ec2:eu-west-2:XXXXXXXX0027:instance/i-0142a8e6e9acf02bd" -> null
+      - associate_public_ip_address          = true -> null
+      - availability_zone                    = "eu-west-2a" -> null
+      - disable_api_stop                     = false -> null
+      - disable_api_termination              = false -> null
+      - ebs_optimized                        = false -> null
+      - force_destroy                        = false -> null
+      - get_password_data                    = false -> null
+      - hibernation                          = false -> null
+      - id                                   = "i-0142a8e6e9acf02bd" -> null
+      - instance_initiated_shutdown_behavior = "stop" -> null
+      - instance_state                       = "running" -> null
+      - instance_type                        = "t3.micro" -> null
+      - ipv6_address_count                   = 0 -> null
+      - ipv6_addresses                       = [] -> null
+      - key_name                             = "cba-akosa-keypair" -> null
+      - monitoring                           = false -> null
+      - placement_partition_number           = 0 -> null
+      - primary_network_interface_id         = "eni-0de44b7db25de0586" -> null
+      - private_dns                          = "ip-172-31-15-40.eu-west-2.compute.internal" -> null
+      - private_ip                           = "172.31.15.40" -> null
+      - public_dns                           = "ec2-52-56-89-180.eu-west-2.compute.amazonaws.com" -> null
+      - public_ip                            = "52.56.89.180" -> null
+      - region                               = "eu-west-2" -> null
+      - secondary_private_ips                = [] -> null
+      - security_groups                      = [
+          - "cba_tf_sg",
+        ] -> null
+      - source_dest_check                    = true -> null
+      - subnet_id                            = "subnet-04b06037ec9380c78" -> null
+      - tags                                 = {
+          - "Name"  = "CBATerraformInstance"
+          - "Owner" = "samuelakosaonyejekwe"
+        } -> null
+      - tags_all                             = {
+          - "Name"  = "CBATerraformInstance"
+          - "Owner" = "samuelakosaonyejekwe"
+        } -> null
+      - tenancy                              = "default" -> null
+      - user_data                            = <<-EOT
+            #!/bin/bash
+            sudo yum update -y
+            sudo yum install httpd -y
+            sudo service httpd start
+            sudo service httpd status
+            sudo echo "Hello World from $(hostname -f)" | sudo tee /var/www/html/index.html
+        EOT -> null
+      - user_data_replace_on_change          = true -> null
+      - vpc_security_group_ids               = [
+          - "sg-0a95f125f4f961ac6",
+        ] -> null
+        # (8 unchanged attributes hidden)
+
+      - capacity_reservation_specification {
+          - capacity_reservation_preference = "open" -> null
+        }
+
+      - cpu_options {
+          - core_count            = 1 -> null
+          - threads_per_core      = 2 -> null
+            # (2 unchanged attributes hidden)
+        }
+
+      - credit_specification {
+          - cpu_credits = "unlimited" -> null
+        }
+
+      - enclave_options {
+          - enabled = false -> null
+        }
+
+      - maintenance_options {
+          - auto_recovery = "default" -> null
+        }
+
+      - metadata_options {
+          - http_endpoint               = "enabled" -> null
+          - http_protocol_ipv6          = "disabled" -> null
+          - http_put_response_hop_limit = 1 -> null
+          - http_tokens                 = "optional" -> null
+          - instance_metadata_tags      = "disabled" -> null
+        }
+
+      - primary_network_interface {
+          - delete_on_termination = true -> null
+          - network_interface_id  = "eni-0de44b7db25de0586" -> null
+        }
+
+      - private_dns_name_options {
+          - enable_resource_name_dns_a_record    = false -> null
+          - enable_resource_name_dns_aaaa_record = false -> null
+          - hostname_type                        = "ip-name" -> null
+        }
+
+      - root_block_device {
+          - delete_on_termination = true -> null
+          - device_name           = "/dev/xvda" -> null
+          - encrypted             = false -> null
+          - iops                  = 100 -> null
+          - tags                  = {} -> null
+          - tags_all              = {} -> null
+          - throughput            = 0 -> null
+          - volume_id             = "vol-015bc8a5ea4c106b6" -> null
+          - volume_size           = 8 -> null
+          - volume_type           = "gp2" -> null
+            # (1 unchanged attribute hidden)
+        }
+    }
+
+  # aws_security_group.cba_tf_sg will be destroyed
+  - resource "aws_security_group" "cba_tf_sg" {
+      - arn                    = "arn:aws:ec2:eu-west-2:XXXXXXXX0027:security-group/sg-0a95f125f4f961ac6" -> null
+      - description            = "allow all traffic" -> null
+      - egress                 = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 0
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "-1"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - id                     = "sg-0a95f125f4f961ac6" -> null
+      - ingress                = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 22
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "tcp"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 22
+                # (1 unchanged attribute hidden)
+            },
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - from_port        = 80
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "tcp"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 80
+                # (1 unchanged attribute hidden)
+            },
+        ] -> null
+      - name                   = "cba_tf_sg" -> null
+      - owner_id               = "XXXXXXXX0027" -> null
+      - region                 = "eu-west-2" -> null
+      - revoke_rules_on_delete = false -> null
+      - tags                   = {
+          - "Name"  = "CBAterraformSG"
+          - "Owner" = "samuelakosaonyejekwe"
+        } -> null
+      - tags_all               = {
+          - "Name"  = "CBAterraformSG"
+          - "Owner" = "samuelakosaonyejekwe"
+        } -> null
+      - vpc_id                 = "vpc-0dd7c25d7f1fb2785" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 0 to add, 0 to change, 2 to destroy.
+
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: 
+aws_instance.cba_tf_instance: Destroying... [id=i-0142a8e6e9acf02bd]
+aws_instance.cba_tf_instance: Still destroying... [id=i-0142a8e6e9acf02bd, 00m10s elapsed]
+aws_instance.cba_tf_instance: Still destroying... [id=i-0142a8e6e9acf02bd, 00m20s elapsed]
+aws_instance.cba_tf_instance: Destruction complete after 21s
+aws_security_group.cba_tf_sg: Destroying... [id=sg-0a95f125f4f961ac6]
+aws_security_group.cba_tf_sg: Destruction complete after 0s
+
+Destroy complete! Resources: 2 destroyed.
